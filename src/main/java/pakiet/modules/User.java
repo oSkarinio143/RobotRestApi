@@ -7,7 +7,6 @@ import pakiet.service.Sorting;
 import pakiet.service.operate.InvestorMenager;
 import pakiet.service.operate.SellerMenager;
 import pakiet.modules.robot.*;
-import pakiet.*;
 
 import java.io.*;
 import java.util.ArrayList;

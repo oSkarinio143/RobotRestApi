@@ -16,13 +16,6 @@ public class UserMenager {
 
     private UserMenager(){}
 
-    public static User createNewUser(String nick){
-        User user = new User(nick);
-        actualUserNick = nick;
-        userList.add(user);
-        return user;
-    }
-
     public static User findUserByNick(String nick){
         for (User userNick : userList) {
             if(userNick.getNick().equals(nick)) {
@@ -30,7 +23,7 @@ public class UserMenager {
                 return userNick;
             }
         }
-        throw new RuntimeException();
+        return null;
     }
 
     public static User actualUsedUser(){
@@ -42,6 +35,24 @@ public class UserMenager {
         SellerMenager.setUserSell();
         MachineMenager.setUserMachine();
         BalanceMenager.setUserBalance();
+    }
+
+    public static User createNewUser(String nick){
+        User user = new User(nick);
+        actualUserNick = nick;
+        userList.add(user);
+        return user;
+    }
+
+    public static boolean createIfNewUser(String nick){
+        if(findUserByNick(nick)==null) {
+            createNewUser(nick);
+            return true;
+        }
+        else{
+            actualUserNick=nick;
+            return false;
+        }
     }
 }
 

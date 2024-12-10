@@ -1,4 +1,6 @@
 D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\modules\robot\SellerBoardGames.java
+D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\connection\InvestorOptionController.java
+D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\connection\OtherOptionController.java
 D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\service\operate\SellerMenager.java
 D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\modules\OperationSeller.java
 D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\modules\robot\Machine.java
@@ -10,16 +12,18 @@ D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\service\o
 D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\modules\robot\SellerHouses.java
 D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\service\operate\UserMenager.java
 D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\service\Sorting.java
+D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\connection\ApiHelper.java
 D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\Main.java
+D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\connection\SellerOptionController.java
 D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\service\operate\UniwersalMenager.java
 D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\exceptions\IncorrectClassRuntimeException.java
 D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\modules\robot\AbstractRobot.java
 D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\modules\robot\AbstractSeller.java
 D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\modules\robot\SellerGames.java
-D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\connection\Server.java
 D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\exceptions\IncorrectNumberRuntimeException.java
 D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\modules\Rarity.java
 D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\modules\robot\SellerComputerGames.java
+D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\connection\BuyOptionController.java
 D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\service\operate\BalanceMenager.java
 D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\exceptions\IllegalOperation.java
 D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\modules\interfaces\Robot.java
@@ -30,6 +34,8 @@ D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\modules\L
 D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\modules\StatsSeller.java
 D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\service\operate\OperationMenager.java
 D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\service\Generator.java
+D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\connection\StringHelper.java
+D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\connection\UserController.java
 D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\modules\OperationInvestor.java
 D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\modules\robot\SellerBooks.java
 D:\Programowanie\ProjektyJava\Projects\RobotMaven\src\main\java\pakiet\service\operate\MachineMenager.java

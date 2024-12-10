@@ -14,10 +14,12 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-@Setter
 public class OperationMenager {
+    @Setter
     private static User user;
+    @Getter
     private static List<Class> classes = new ArrayList<>(List.of(SellerBooks.class, SellerBoardGames.class, SellerComputerGames.class, SellerHouses.class));
+    @Getter
     private static List<Double> values = new ArrayList<>(List.of(RobotSeller.BOOK_SELLER_COST_RATE, RobotSeller.BOARD_GAMES_SELLER_COST_RATE,
             RobotSeller.COMPUTER_GAMES_SELLER_COST_RATE, RobotSeller.HOUSES_SELLER_COST_RATE));
     @Getter
@@ -198,8 +200,10 @@ public class OperationMenager {
     }
 
     public static boolean buyMachine() {
-        boolean isSuccesful = BalanceMenager.safeChangeBalance(Machine.getMACHINE_COST());
-        if (isSuccesful) {
+        boolean isSuccesful = BalanceMenager.safeCheckBalance(Machine.getMACHINE_COST());
+        boolean isMachineOwned = MachineMenager.isMachineUnlocked();
+        if (isSuccesful && !isMachineOwned) {
+            BalanceMenager.safeChangeBalance(Machine.getMACHINE_COST());
             MachineMenager.unlockMachine();
             return true;
         }
@@ -217,8 +221,8 @@ public class OperationMenager {
     }
 
     public static boolean performInvestment(int howManyTimes, int goldAmount) {
-        boolean isSuccessfulCondition2 = BalanceMenager.safeCheckBalance(Machine.getMACHINE_INVESTER_USE());
-        boolean isSuccessfulCondition3 = BalanceMenager.safeCheckBalance(goldAmount);
+        boolean isSuccessfulCondition2 = BalanceMenager.safeCheckBalance(Machine.getMACHINE_INVESTER_USE()*howManyTimes);
+        boolean isSuccessfulCondition3 = BalanceMenager.safeCheckBalance(goldAmount+Machine.getMACHINE_INVESTER_USE()*howManyTimes);
         if (isSuccessfulCondition2 && isSuccessfulCondition3) {
             BalanceMenager.safeChangeBalance(Machine.getMACHINE_INVESTER_USE()*howManyTimes);
             MachineMenager.performInvestmentMultiple(howManyTimes, goldAmount);
@@ -229,7 +233,7 @@ public class OperationMenager {
 
     public static boolean performWorkInvestment(int howManyTimes, int goldAmount) {
         boolean isSuccessfulCondition2 = BalanceMenager.safeCheckBalance(Machine.getMACHINE_TOGETHER_USE());
-        boolean isSuccessfulCondition3 = BalanceMenager.safeCheckBalance(goldAmount);
+        boolean isSuccessfulCondition3 = BalanceMenager.safeCheckBalance(goldAmount+Machine.getMACHINE_TOGETHER_USE()*howManyTimes);
         if (isSuccessfulCondition2 && isSuccessfulCondition3) {
             BalanceMenager.safeChangeBalance(Machine.getMACHINE_TOGETHER_USE()*howManyTimes);
             MachineMenager.performWorkInvestmentMultiple(howManyTimes, goldAmount);
@@ -268,3 +272,5 @@ public class OperationMenager {
         operationsList.add(Map.of((Object) (BiConsumer<Integer, Integer>) OperationMenager::performWorkInvestment, List.of(4, 4, 5)));
     }
 }
+
+

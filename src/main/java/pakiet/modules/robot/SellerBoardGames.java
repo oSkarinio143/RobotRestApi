@@ -7,8 +7,6 @@ import pakiet.modules.*;
 import java.io.Serializable;
 import java.util.Map;
 
-import static pakiet.modules.interfaces.RobotSeller.BOARD_GAMES_SELLER_EARN_RATE;
-
 public class SellerBoardGames extends SellerGames implements Serializable {
     private static final long serialVersionUID = 1L;
     private int sellerBoardGamesId;

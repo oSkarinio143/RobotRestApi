@@ -262,4 +262,33 @@ public class SellerMenager {
         user.getOwnedSellers().forEach(v -> idsList.add(v.getSellerId()));
         return idsList;
     }
+
+    public static Class getSellerClass(int idSel){
+        AbstractSeller seller = findSellerById(idSel).get();
+        if (seller instanceof SellerBooks){
+            return SellerBooks.class;
+        }if (seller instanceof SellerBoardGames){
+            return SellerBoardGames.class;
+        }if (seller instanceof SellerComputerGames){
+            return SellerComputerGames.class;
+        }if (seller instanceof SellerHouses){
+            return SellerHouses.class;
+        }
+        throw new RuntimeException("Incorrect id");
+    }
+
+    public String getStringClass(int idSel){
+        AbstractSeller seller = findSellerById(idSel).get();
+        if (seller instanceof SellerBooks){
+            return "SellerBooks";
+        }if (seller instanceof SellerBoardGames){
+            return "SellerBoardGames";
+        }if (seller instanceof SellerComputerGames){
+            return "SellerComputerGames";
+        }if (seller instanceof SellerHouses){
+            return "SellerHouses";
+        }
+        throw new RuntimeException("Incorrect id");
+    }
+
 }

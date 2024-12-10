@@ -31,7 +31,7 @@ public class InvestorMenager {
             if(investor.getInvId()==idInv)
                 return investor;
         }
-        throw new IncorrectIdRuntimeException();
+        return null;
     }
 
     public static void displayInvestorStats(int idInv){
