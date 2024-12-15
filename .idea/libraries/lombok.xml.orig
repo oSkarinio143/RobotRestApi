@@ -2,7 +2,10 @@
   <library name="lombok">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/../../../Inne/Biblioteki/Lombok/lombok.jar!/" />
+<<<<<<< HEAD
+=======
       <root url="jar://$PROJECT_DIR$/../../../../Inne/Biblioteki/Lombok/lombok.jar!/" />
+>>>>>>> RestApi
     </CLASSES>
     <JAVADOC />
     <SOURCES />
