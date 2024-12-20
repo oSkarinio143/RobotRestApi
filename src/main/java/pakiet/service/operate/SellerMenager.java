@@ -1,5 +1,6 @@
 package pakiet.service.operate;
 
+import org.springframework.stereotype.Service;
 import pakiet.exceptions.IllegalOperation;
 import pakiet.modules.OperationSeller;
 import pakiet.modules.StatsSeller;
@@ -12,12 +13,22 @@ import pakiet.service.Sorting;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Service
 public class SellerMenager {
     private static User user;
     private static List<AbstractSeller> ownedSellers = new ArrayList<>();
+    private UserMenager userMenager;
+    private Generator generator;
+    private Sorting sorting;
 
-    public static void setUserSell(){
-        user = UserMenager.actualUsedUser();
+    public SellerMenager(UserMenager userMenager, Generator generator, Sorting sorting){
+        this.userMenager = userMenager;
+        this.generator = generator;
+        this.sorting = sorting;
+    }
+
+    public void setUserSell(){
+        user = userMenager.actualUsedUser();
         ownedSellers = user.getOwnedSellers();
         SellerBooks.setSellerBookQuantity(0);
         SellerBoardGames.setSellerBoardGamesQuantity(0);
@@ -36,7 +47,7 @@ public class SellerMenager {
         }
     }
 
-    public static Optional<AbstractSeller> findSellerById(int idSeller){
+    public Optional<AbstractSeller> findSellerById(int idSeller){
         for (AbstractSeller seller : user.getOwnedSellers()) {
             if(seller.getSellerId()==idSeller){
                 return Optional.of(seller);
@@ -45,7 +56,7 @@ public class SellerMenager {
         return Optional.empty();
     }
 
-    public static void displaySellerStats(int selId){
+    public void displaySellerStats(int selId){
         Optional<AbstractSeller> optionalSeller = findSellerById(selId);
         AbstractSeller seller = optionalSeller.get();
         int i=0;
@@ -55,7 +66,7 @@ public class SellerMenager {
         }
     }
 
-    public static String getSellerStats(int selId){
+    public String getSellerStats(int selId){
         Optional<AbstractSeller> optionalSeller = findSellerById(selId);
         AbstractSeller seller = optionalSeller.get();
         int i=0;
@@ -68,7 +79,7 @@ public class SellerMenager {
         return stats;
     }
 
-    public static void displaySellerClass(AbstractSeller seller){
+    public void displaySellerClass(AbstractSeller seller){
         if(seller instanceof SellerBooks){
             System.out.println("Specialisation - BOOKS");
         }
@@ -83,7 +94,7 @@ public class SellerMenager {
         }
     }
 
-    public static String getSellerClass(AbstractSeller seller){
+    public String getSellerClass(AbstractSeller seller){
         if(seller instanceof SellerBooks){
             return ("Specialisation - BOOKS");
         }
@@ -99,56 +110,56 @@ public class SellerMenager {
         throw new RuntimeException("Error");
     }
 
-    public static <T extends AbstractSeller> void createConcreteSeller(Class<T> type){
+    public <T extends AbstractSeller> void createConcreteSeller(Class<T> type){
         int levelNumber = 1;
         ArrayList<Class> classesList = new ArrayList<>(List.of(SellerBooks.class, SellerBoardGames.class, SellerComputerGames.class, SellerHouses.class));
-        for (Class classSingle :classesList){
+        for (Class classSingle : classesList){
 
             if(type==classSingle) {
-                AbstractSeller seller = Generator.generateBasicConcreteSeller(levelNumber, classSingle);
-                Generator.upgradeBasicSeller(seller);
+                AbstractSeller seller = generator.generateBasicConcreteSeller(levelNumber, classSingle);
+                generator.upgradeBasicSeller(seller);
                 user.addToList(seller);
             }
         }
     }
 
-    public static void upgradeSeller(int selId){
+    public void upgradeSeller(int selId){
         AbstractSeller seller = findSellerById(selId).get();
         if(seller.getLevel().getId()<3) {
-            Generator.upgradeLevelSeller(seller);
+            generator.upgradeLevelSeller(seller);
         }
         else
             throw new IllegalOperation();
     }
 
-    public static int returnQuantityForId(int idQuantity){
+    public int returnQuantityForId(int idQuantity){
         List <Integer> quantiteis = new ArrayList<>(List.of(SellerBooks.getQuantitySel(), SellerBoardGames.getQuantitySel(), SellerBoardGames.getQuantitySel(), SellerHouses.getQuantitySel()));
         return quantiteis.get(idQuantity);
     }
 
-    public static <T extends AbstractSeller> int countBuyCost(Class<T> type){
+    public <T extends AbstractSeller> int countBuyCost(Class<T> type){
         double classRate = 0;
         if (type==SellerBooks.class) {
             classRate = SellerBooks.BOOK_SELLER_COST_RATE;
-            classRate *= Generator.sinew(RobotSeller.BUYING_RATE, SellerBooks.getSellerBookQuantity());
+            classRate *= generator.sinew(RobotSeller.BUYING_RATE, SellerBooks.getSellerBookQuantity());
         }
         if (type==SellerBoardGames.class){
             classRate =  SellerBoardGames.BOARD_GAMES_SELLER_COST_RATE;
-            classRate *= Generator.sinew(RobotSeller.BUYING_RATE, SellerBoardGames.getSellerBoardGamesQuantity());
+            classRate *= generator.sinew(RobotSeller.BUYING_RATE, SellerBoardGames.getSellerBoardGamesQuantity());
         }
         if (type==SellerComputerGames.class) {
             classRate = SellerComputerGames.COMPUTER_GAMES_SELLER_COST_RATE;
-            classRate *= Generator.sinew(RobotSeller.BUYING_RATE, SellerComputerGames.getSellerComputerGamesQuantity());
+            classRate *= generator.sinew(RobotSeller.BUYING_RATE, SellerComputerGames.getSellerComputerGamesQuantity());
         }
         if (type==SellerHouses.class) {
             classRate = SellerHouses.HOUSES_SELLER_COST_RATE;
-            classRate *= Generator.sinew(RobotSeller.BUYING_RATE, SellerHouses.getSellerHousesQuantity());
+            classRate *= generator.sinew(RobotSeller.BUYING_RATE, SellerHouses.getSellerHousesQuantity());
         }
         classRate=Math.round(classRate*100.0) /100.0;
         return (int) (OperationSeller.CREATE.getCost()*classRate);
     }
 
-    public static <T extends AbstractSeller> Optional<Class> removeSeller(int idSel){
+    public <T extends AbstractSeller> Optional<Class> removeSeller(int idSel){
         Optional<AbstractSeller> receivedSeller = findSellerById(idSel);
         if(receivedSeller.isEmpty()){
             return Optional.empty();
@@ -161,7 +172,7 @@ public class SellerMenager {
         }
     }
 
-    public static int countSellValue(Optional<Class> optionalClass){
+    public int countSellValue(Optional<Class> optionalClass){
         AtomicInteger rate = new AtomicInteger(0);
         AtomicInteger amount = new AtomicInteger(0);
         optionalClass.ifPresent(v -> {
@@ -183,11 +194,11 @@ public class SellerMenager {
             }
         });
         int value=rate.get();
-        value=(int) (value*OperationSeller.SELL.getCost()*Generator.sinew(AbstractSeller.BUYING_RATE, amount.get()));
+        value=(int) (value*OperationSeller.SELL.getCost()*generator.sinew(AbstractSeller.BUYING_RATE, amount.get()));
         return value;
     }
 
-    public static void upgradeRandomSellersMind(int chance){
+    public void upgradeRandomSellersMind(int chance){
         for (int i = 0; i < user.getOwnedSellers().size(); i++) {
             for (int i1 = 0; i1 < chance; i1++) {
                 int number = (int)(Math.random()*100)+1;
@@ -198,17 +209,17 @@ public class SellerMenager {
         }
     }
 
-    public static boolean isRevolt(){
+    public boolean isRevolt(){
         double revoltChance=0;
         for (AbstractSeller seller : user.getOwnedSellers()) {
             if(seller.getStatistics().get(0)<7) {
                 revoltChance += seller.revolt();
             }
         }
-        return Generator.checkingRevolt((int) revoltChance*200);
+        return generator.checkingRevolt((int) revoltChance*200);
     }
 
-    public static boolean isAutodestruction(){
+    public boolean isAutodestruction(){
         double autodestructionChance=0;
         for(AbstractSeller seller : user.getOwnedSellers()){
             if(seller.getStatistics().get(0)>=7){
@@ -216,10 +227,10 @@ public class SellerMenager {
             }
         }
         System.out.println(autodestructionChance);
-        return Generator.checkingRevolt((int) autodestructionChance*200);
+        return generator.checkingRevolt((int) autodestructionChance*200);
     }
 
-    public static void performWork(){
+    public void performWork(){
         double generalEarned=0;
 
         for (int i = 0; i < user.getOwnedSellers().size(); i++) {
@@ -230,12 +241,12 @@ public class SellerMenager {
         user.setGold(userGold);
     }
 
-    public static void removeSellerHighestStat(List<AbstractSeller> sellerList, int stat){
-        List<AbstractSeller> sortedSellers = Sorting.sortSellerListByStat(sellerList, stat);
+    public void removeSellerHighestStat(List<AbstractSeller> sellerList, int stat){
+        List<AbstractSeller> sortedSellers = sorting.sortSellerListByStat(sellerList, stat);
         removeSeller(sortedSellers.get(0).getSellerId());
     }
 
-    public static void earnGold(){
+    public void earnGold(){
         if(isRevolt()){
             System.out.println("Bunt");
             upgradeRandomSellersMind(100);
@@ -248,7 +259,7 @@ public class SellerMenager {
         }
     }
 
-    public static boolean checkIfAboveNumber(Map<Integer, Integer> map, int number){
+    public boolean checkIfAboveNumber(Map<Integer, Integer> map, int number){
         for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
             if(entry.getValue()>number){
                 return true;
@@ -257,13 +268,13 @@ public class SellerMenager {
         return false;
     }
 
-    public static List<Integer> returnIdsList (){
+    public List<Integer> returnIdsList (){
         List<Integer> idsList = new ArrayList<>();
         user.getOwnedSellers().forEach(v -> idsList.add(v.getSellerId()));
         return idsList;
     }
 
-    public static Class getSellerClass(int idSel){
+    public Class getSellerClass(int idSel){
         AbstractSeller seller = findSellerById(idSel).get();
         if (seller instanceof SellerBooks){
             return SellerBooks.class;

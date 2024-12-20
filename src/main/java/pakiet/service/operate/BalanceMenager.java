@@ -1,5 +1,6 @@
 package pakiet.service.operate;
 
+import org.springframework.stereotype.Service;
 import pakiet.exceptions.InsufficientBalanceException;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,18 +8,24 @@ import pakiet.modules.User;
 
 @Getter
 @Setter
+@Service
 public class BalanceMenager {
     private static User user;
+    private UserMenager userMenager;
 
-    public static void setUserBalance(){
-        user = UserMenager.actualUsedUser();
+    public BalanceMenager(UserMenager userMenager){
+        this.userMenager = userMenager;
     }
 
-    public static double returnGoldAmount(){
+    public void setUserBalance(){
+        user = userMenager.actualUsedUser();
+    }
+
+    public double returnGoldAmount(){
         return user.getGold();
     }
 
-    public static boolean checkBalance(int change) throws InsufficientBalanceException {
+    public boolean checkBalance(int change) throws InsufficientBalanceException {
         double userGold = user.getGold();
         if(userGold>=change)
             return true;
@@ -26,7 +33,7 @@ public class BalanceMenager {
             throw new InsufficientBalanceException();
     }
 
-    public static void changeBalance(int change) throws InsufficientBalanceException {
+    public void changeBalance(int change) throws InsufficientBalanceException {
         if (checkBalance(change)) {
             double userGold = user.getGold();
             userGold-=change;
@@ -34,7 +41,7 @@ public class BalanceMenager {
         }
     }
 
-    public static boolean safeCheckBalance(int amount){
+    public boolean safeCheckBalance(int amount){
         try{
             checkBalance(amount);
             return true;
@@ -44,7 +51,7 @@ public class BalanceMenager {
         }
     }
 
-    public static boolean safeChangeBalance(int change){
+    public boolean safeChangeBalance(int change){
         try{
             changeBalance(change);
             return true;

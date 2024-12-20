@@ -6,9 +6,9 @@ import lombok.Getter;
 @Getter
 public enum Level {
     BEGINNER(1, 0, 7), INTERMEDIATE(2, 4, 9), ADVANCED(3, 5, 10);
-    private int id;
-    private int additionalStats;
-    private int constraint;
+    private final int id;
+    private final int additionalStats;
+    private final int constraint;
 
     Level(int id, int additionalStats, int constraint){
         this.id=id;

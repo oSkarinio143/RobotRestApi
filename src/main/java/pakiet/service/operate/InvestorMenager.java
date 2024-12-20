@@ -1,5 +1,6 @@
 package pakiet.service.operate;
 
+import org.springframework.stereotype.Service;
 import pakiet.exceptions.IllegalOperation;
 import pakiet.exceptions.IncorrectIdRuntimeException;
 import pakiet.modules.OperationInvestor;
@@ -14,17 +15,25 @@ import java.util.Map;
 
 import static pakiet.service.Generator.*;
 
+@Service
 public class InvestorMenager {
     private static User user;
     private static List<Investor> ownedInvestors = new ArrayList<>();
+    private UserMenager userMenager;
+    private Generator generator;
 
-    public static void setUserInv(){
-        user = UserMenager.actualUsedUser();
+    public InvestorMenager(UserMenager userMenager, Generator generator){
+        this.userMenager = userMenager;
+        this.generator = generator;
+    }
+
+    public void setUserInv(){
+        user = userMenager.actualUsedUser();
         ownedInvestors = user.getOwnedInvestors();
         Investor.setQuantityInv(ownedInvestors.size());
     }
 
-    public static Investor findInvestorById(int idInv){
+    public Investor findInvestorById(int idInv){
         List<Investor> listInvestors = user.getOwnedInvestors();
 
         for (Investor investor : listInvestors) {
@@ -34,7 +43,7 @@ public class InvestorMenager {
         return null;
     }
 
-    public static void displayInvestorStats(int idInv){
+    public void displayInvestorStats(int idInv){
         Investor investor = findInvestorById(idInv);
         Map<Integer, Integer> intMap = investor.getStatistics();
         intMap.forEach((k, v)->{
@@ -42,48 +51,35 @@ public class InvestorMenager {
         });
     }
 
-    public static String getStatisticsString(int idInv){
-        Investor investor = findInvestorById(idInv);
-        Map<Integer, Integer> intMap = investor.getStatistics();
-        String statsView="";
-        for (Map.Entry<Integer, Integer> entry : intMap.entrySet()) {
-            Integer value = entry.getValue();
-            Integer key = entry.getKey();
-            String part = StatsInvestor.getById(key)+" - "+value+"|";
-            statsView+=part;
-        }
-        return statsView;
-    }
-
-    public static void createInvestor(){
+    public void createInvestor(){
         int levelNumber = 1;
-        Investor investor = generateBasicInvestor(levelNumber);
-        upgradeBasicInvestor(investor);
+        Investor investor = generator.generateBasicInvestor(levelNumber);
+        generator.upgradeBasicInvestor(investor);
         user.addToList(investor);
     }
 
-    public static void removeInvestor(int idInv){
+    public void removeInvestor(int idInv){
         user.removeFromList(Investor.class, idInv);
     }
 
-    public static void upgradeInvestor (int idInv){
+    public void upgradeInvestor (int idInv){
         Investor investor = findInvestorById(idInv);
         if (investor.getLevel().getId()<3){
-            Generator.upgradeLevelInvestor(investor);
+            generator.upgradeLevelInvestor(investor);
         }else{
             throw new IllegalOperation();
         }
     }
 
-    private static boolean isRevolt (){
+    private boolean isRevolt (){
         double revoltChance=0;
         for (Investor investor : user.getOwnedInvestors()) {
             revoltChance += investor.revolt();
         }
-        return Generator.checkingRevolt((int) revoltChance*10);
+        return generator.checkingRevolt((int) revoltChance*10);
     }
 
-    private static void makeInvestition(int goldAmount){
+    private void makeInvestition(int goldAmount){
         double userGold = user.getGold();
 
         for (Investor investor : user.getOwnedInvestors()) {
@@ -94,7 +90,7 @@ public class InvestorMenager {
         user.setGold(userGold);
     }
 
-    public static void investMoney(int goldAmount){
+    public void investMoney(int goldAmount){
         if(isRevolt()){
             user.setGold(user.getGold()-goldAmount);
         }else{
@@ -102,7 +98,7 @@ public class InvestorMenager {
         }
     }
 
-    public static int countBuyCost(){
+    public int countBuyCost(){
         double rate = Investor.getBuyCostMultiplier();
         for(int i = 0; i<Investor.getQuantityInv(); i++){
             rate *= Investor.getBuyCostMultiplier();
@@ -111,16 +107,7 @@ public class InvestorMenager {
         return cost;
     }
 
-    public static int countValue(){
-        double rate = Investor.getBuyCostMultiplier();
-        for(int i = 0; i<Investor.getQuantityInv(); i++){
-            rate *= Investor.getBuyCostMultiplier();
-        }
-        int cost = (int) (OperationInvestor.SELL.getCost()*rate);
-        return cost;
-    }
-
-    public static boolean checkIfAboveNumber(Map<Integer, Integer> map, int number){
+    public boolean checkIfAboveNumber(Map<Integer, Integer> map, int number){
         for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
             if(entry.getValue()>number){
                 return true;
@@ -129,10 +116,9 @@ public class InvestorMenager {
         return false;
     }
 
-    public static List<Integer> returnIdsList(){
+    public List<Integer> returnIdsList(){
         List<Integer> idList = new ArrayList<>();
         user.getOwnedInvestors().forEach(v -> idList.add(v.getInvId()));
         return idList;
     }
-
 }

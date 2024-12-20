@@ -6,9 +6,9 @@ import lombok.Getter;
 @Getter
 public enum StatsSeller {
     MIND(0, 0, 10), SPEED(1, 0, 10), NEGOTIATION(2, 0, 10), EFFICIENCY(3, 0, 10);
-    private int id;
-    private int minRange;
-    private int maxRange;
+    private final int id;
+    private final int minRange;
+    private final int maxRange;
 
     StatsSeller(int id, int minRange, int maxRange){
         this.id=id;
@@ -23,6 +23,5 @@ public enum StatsSeller {
             }
         }
         throw new IncorrectIdRuntimeException("Incorrect Id");
-        //Tworzenie wyjatku bez bloku tryCatch bez podawania throwable, sama wiadomosc
     }
 }

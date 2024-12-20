@@ -5,23 +5,19 @@ import lombok.Setter;
 import pakiet.modules.Level;
 import pakiet.modules.Rarity;
 import pakiet.modules.interfaces.RobotSeller;
+import pakiet.service.Generator;
+import pakiet.service.operate.InvestorMenager;
 
 import java.io.Serializable;
 import java.util.Map;
 
-public class SellerHouses extends AbstractSeller implements Serializable {
-    private static final long serialVersionUID = 1L;
-    private int sellerHousesId;
-
+public class SellerHouses extends AbstractSeller{
     @Getter
     @Setter
     private static int sellerHousesQuantity = 0;
 
-    @Getter
-    private static final int uniqueId = 3;
-
-    public SellerHouses(Map<Integer, Integer> map, Rarity rarity, Level level){
-        super(map, rarity, level);
+    public SellerHouses(Map<Integer, Integer> map, Rarity rarity, Level level, Generator generator, InvestorMenager investorMenager){
+        super(map, rarity, level, generator, investorMenager);
     }
 
     @Override

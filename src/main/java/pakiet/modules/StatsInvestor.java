@@ -6,9 +6,9 @@ import lombok.Getter;
 @Getter
 public enum StatsInvestor {
     MIND(0, 0, 10), PREDICTION(1, 0, 10), RISKTENDENCY(2, 0, 10), PATIENCE(3, 0, 10);
-    int id;
-    int minRange;
-    int maxRange;
+    private final int id;
+    private final int minRange;
+    private final int maxRange;
 
     StatsInvestor(int id, int minRange, int maxRange){
         this.id=id;

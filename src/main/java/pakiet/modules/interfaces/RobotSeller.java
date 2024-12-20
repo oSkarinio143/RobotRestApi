@@ -14,6 +14,4 @@ public interface RobotSeller extends Robot {
     double COMPUTER_GAMES_SELLER_EARN_RATE = 22;
     double HOUSES_SELLER_EARN_RATE = 54;
     double EARNINGS = 1;
-    List<Double> costRates = new ArrayList<>(List.of(BOOK_SELLER_COST_RATE, BOARD_GAMES_SELLER_COST_RATE, COMPUTER_GAMES_SELLER_COST_RATE, HOUSES_SELLER_COST_RATE));
-    List<Double> earnRates = new ArrayList<>(List.of(BOOK_SELLER_EARN_RATE, BOARD_GAMES_SELLER_EARN_RATE, COMPUTER_GAMES_SELLER_EARN_RATE, HOUSES_SELLER_EARN_RATE));
 }

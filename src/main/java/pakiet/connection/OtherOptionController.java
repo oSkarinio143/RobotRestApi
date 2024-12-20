@@ -6,10 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pakiet.service.operate.BalanceMenager;
-import pakiet.service.operate.InvestorMenager;
-import pakiet.service.operate.OperationMenager;
-import pakiet.service.operate.SellerMenager;
+import pakiet.service.operate.*;
 
 @RestController
 @RequestMapping("/robot/")
@@ -17,9 +14,23 @@ public class OtherOptionController {
     private int chosedOperation;
     private int chosedTimes;
 
+    private final OperationMenager operationMenager;
+    private final BalanceMenager balanceMenager;
+    private final ApiHelper apiHelper;
+    private final StringHelper stringHelper;
+    private final MachineMenager machineMenager;
+
+    public OtherOptionController(MachineMenager machineMenager, OperationMenager operationMenager, BalanceMenager balanceMenager, ApiHelper apiHelper, StringHelper stringHelper){
+        this.operationMenager = operationMenager;
+        this.balanceMenager = balanceMenager;
+        this.apiHelper = apiHelper;
+        this.stringHelper = stringHelper;
+        this.machineMenager = machineMenager;
+    }
+
     @GetMapping("{nick}/other/")
     public String showOtherOperations() {
-        return StringHelper.getOtherOperationChoice();
+        return stringHelper.getOtherOperationChoice();
     }
 
     @GetMapping("{nick}/other/{choiceOperation}")
@@ -27,15 +38,19 @@ public class OtherOptionController {
         chosedOperation = choiceOperation;
         switch (choiceOperation) {
             case 1:
-                String message = "Dostepny gold - "+Double.toString(BalanceMenager.returnGoldAmount());
+                String message = "Dostepny gold - "+Double.toString(balanceMenager.returnGoldAmount());
                 session.setAttribute("message", message);
-                return ApiHelper.getResponseLocation("/robot/" + nick + "/type/");
+                return apiHelper.getResponseLocation("/robot/" + nick + "/type/");
 
             case 2, 3, 4:
-                return ApiHelper.getResponseLocation("/robot/" + nick + "/other/times/");
-
+                if(machineMenager.isMachineUnlocked())
+                    return apiHelper.getResponseLocation("/robot/" + nick + "/other/times/");
+                else {
+                    session.setAttribute("message","Maszyna niedostepna");
+                    return apiHelper.getResponseLocation("/robot/" + nick + "/type/");
+                }
             default:
-                return ApiHelper.getResponseLocation("/robot/" + nick + "other/");
+                return apiHelper.getResponseLocation("/robot/" + nick + "other/");
         }
     }
 
@@ -48,27 +63,27 @@ public class OtherOptionController {
     public ResponseEntity<Void> setOperationTimes(@PathVariable String nick, @PathVariable int choiceTimes, HttpSession session) {
         chosedTimes = choiceTimes;
         if (choiceTimes < 1 || choiceTimes > 100) {
-            return ApiHelper.getResponseLocation("/robot/" + nick + "/other/times/");
+            return apiHelper.getResponseLocation("/robot/" + nick + "/other/times/");
         }
         switch (chosedOperation) {
             case 2:
-                if(OperationMenager.performWork(choiceTimes))
-                    ApiHelper.setMessageOperationSuccessful(session);
+                if(operationMenager.performWork(choiceTimes))
+                    apiHelper.setMessageOperationSuccessful(session);
                 else
-                    ApiHelper.setMessageOperationUnSuccessful(session);
-                return ApiHelper.getResponseLocation("/robot/" + nick + "/type/");
+                    apiHelper.setMessageOperationUnSuccessful(session);
+                return apiHelper.getResponseLocation("/robot/" + nick + "/type/");
 
             case 3,4:
-                return ApiHelper.getResponseLocation("/robot/" + nick + "/other/amount/");
+                return apiHelper.getResponseLocation("/robot/" + nick + "/other/amount/");
 
             default:
-                return ApiHelper.getResponseLocation("/robot/" + nick + "times/");
+                return apiHelper.getResponseLocation("/robot/" + nick + "times/");
         }
     }
 
     @GetMapping("{nick}/other/amount/")
     public String choseAmountCommunication(){
-        return "Podaj ilosc golda, dostepne - " + BalanceMenager.returnGoldAmount();
+        return "Podaj ilosc golda, dostepne - " + balanceMenager.returnGoldAmount();
     }
 
 
@@ -76,21 +91,21 @@ public class OtherOptionController {
     public ResponseEntity<Void> setOperatoinAmount (@PathVariable String nick, @PathVariable int choiceAmount, HttpSession session) {
         switch (chosedOperation) {
             case 3:
-                if(OperationMenager.performInvestment(chosedTimes, choiceAmount))
-                    ApiHelper.setMessageOperationSuccessful(session);
+                if(operationMenager.performInvestment(chosedTimes, choiceAmount))
+                    apiHelper.setMessageOperationSuccessful(session);
                 else
-                    ApiHelper.setMessageOperationUnSuccessful(session);
-                return ApiHelper.getResponseLocation("/robot/" + nick + "/type/");
+                    apiHelper.setMessageOperationUnSuccessful(session);
+                return apiHelper.getResponseLocation("/robot/" + nick + "/type/");
 
             case 4:
-                if(OperationMenager.performWorkInvestment(chosedTimes, choiceAmount))
-                    ApiHelper.setMessageOperationSuccessful(session);
+                if(operationMenager.performWorkInvestment(chosedTimes, choiceAmount))
+                    apiHelper.setMessageOperationSuccessful(session);
                 else
-                    ApiHelper.setMessageOperationUnSuccessful(session);
-                return ApiHelper.getResponseLocation("/robot/" + nick + "/type/");
+                    apiHelper.setMessageOperationUnSuccessful(session);
+                return apiHelper.getResponseLocation("/robot/" + nick + "/type/");
 
             default:
-                return ApiHelper.getResponseLocation("/robot/" + nick + "/type/");
+                return apiHelper.getResponseLocation("/robot/" + nick + "/type/");
         }
     }
 }

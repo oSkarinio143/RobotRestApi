@@ -12,11 +12,10 @@ import java.util.Map;
 @Getter
 @Setter
 public abstract class AbstractRobot implements Robot, Serializable{
-    private static final long serialVersionUID = 1L;
     private int robotId;
     private Level level;
     private Rarity rarity;
-    private static int quantity=0;
+    private static int quantity = 0;
     private Map<Integer, Integer> statistics;
 
 

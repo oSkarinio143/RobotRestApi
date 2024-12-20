@@ -1,25 +1,15 @@
 package pakiet.modules;
 
 import lombok.Getter;
-import pakiet.exceptions.IncorrectIdRuntimeException;
 
 @Getter
 public enum Rarity {
     COMMON(0, 0), RARE(1, 2), EPIC(2, 5);
-    private int id;
-    private int additionalStats;
+    private final int id;
+    private final int additionalStats;
 
     Rarity(int id, int additionalStats){
         this.id=id;
         this.additionalStats=additionalStats;
-    }
-
-    public Rarity getById(int id){
-        for(Rarity rarity : Rarity.values()){
-            if(rarity.id==id){
-                return rarity;
-            }
-        }
-        throw new IncorrectIdRuntimeException("Incorrect Id");
     }
 }

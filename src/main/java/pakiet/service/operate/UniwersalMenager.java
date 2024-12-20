@@ -2,13 +2,15 @@ package pakiet.service.operate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
 
 public class UniwersalMenager {
+    private static final Random random = new Random();
+
     public static boolean isInRange(int number, int minRange, int maxRange){
-        if(number<=maxRange && number>=minRange)
-            return true;
-        else
-            return false;
+        return number <= maxRange && number >= minRange;
     }
 
     public static boolean isInteger(String idChoice){
@@ -46,4 +48,24 @@ public class UniwersalMenager {
         return false;
     }
 
+    public static int sumStats(Map<Integer, Integer> mapStats, int ...statsId){
+        int sum=0;
+        for (int i : statsId) {
+            sum+=mapStats.get(i);
+        }
+        return sum;
+    }
+
+    public static boolean drawByChance(int chanceEnd){
+        int minRange=1;
+        int maxRange=100;
+        int chanceStart=1;
+        for (int i = chanceStart; i<=chanceEnd; i++){
+            int chosedNumber = random.nextInt(maxRange)+minRange;
+            if(chosedNumber==1)
+                return true;
+            maxRange--;
+        }
+        return false;
+    }
 }

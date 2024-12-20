@@ -7,59 +7,67 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pakiet.service.operate.OperationMenager;
-import pakiet.service.operate.UserMenager;
 
 @RestController
 @RequestMapping("/robot/")
 public class BuyOptionController {
+    private final OperationMenager operationMenager;
+    private final ApiHelper apiHelper;
+    private final StringHelper stringHelper;
+
+    BuyOptionController(OperationMenager operationMenager, ApiHelper apiHelper, StringHelper stringHelper){
+        this.operationMenager = operationMenager;
+        this.apiHelper = apiHelper;
+        this.stringHelper = stringHelper;
+    }
 
     @GetMapping("{nick}/buy/")
     public String showBuyOperations(){
-        return StringHelper.getBuyOperationChoice();
+        return stringHelper.getBuyOperationChoice();
     }
 
     @GetMapping("{nick}/buy/{choiceOperation}")
     public ResponseEntity<Void> choiceBuyOperation(@PathVariable String nick, @PathVariable int choiceOperation, HttpSession session){
         switch (choiceOperation) {
             case 1:
-                if(OperationMenager.buyInvestor())
-                    ApiHelper.setMessageOperationSuccessful(session);
+                if(operationMenager.buyInvestor())
+                    apiHelper.setMessageOperationSuccessful(session);
                 else
-                    ApiHelper.setMessageOperationUnSuccessful(session);
+                    apiHelper.setMessageOperationUnSuccessful(session);
                 break;
             case 2:
-                if(OperationMenager.buyBooksSeller())
-                    ApiHelper.setMessageOperationSuccessful(session);
+                if(operationMenager.buyBooksSeller())
+                    apiHelper.setMessageOperationSuccessful(session);
                 else
-                    ApiHelper.setMessageOperationUnSuccessful(session);
+                    apiHelper.setMessageOperationUnSuccessful(session);
                 break;
             case 3:
-                if(OperationMenager.buyBoardGamesSeller())
-                    ApiHelper.setMessageOperationSuccessful(session);
+                if(operationMenager.buyBoardGamesSeller())
+                    apiHelper.setMessageOperationSuccessful(session);
                 else
-                    ApiHelper.setMessageOperationUnSuccessful(session);
+                    apiHelper.setMessageOperationUnSuccessful(session);
                 break;
             case 4:
-                if(OperationMenager.buyComputerGamesSeller())
-                    ApiHelper.setMessageOperationSuccessful(session);
+                if(operationMenager.buyComputerGamesSeller())
+                    apiHelper.setMessageOperationSuccessful(session);
                 else
-                    ApiHelper.setMessageOperationUnSuccessful(session);
+                    apiHelper.setMessageOperationUnSuccessful(session);
                 break;
             case 5:
-                if(OperationMenager.buyHousesSeller())
-                    ApiHelper.setMessageOperationSuccessful(session);
+                if(operationMenager.buyHousesSeller())
+                    apiHelper.setMessageOperationSuccessful(session);
                 else
-                    ApiHelper.setMessageOperationUnSuccessful(session);
+                    apiHelper.setMessageOperationUnSuccessful(session);
                 break;
             case 6:
-                if(OperationMenager.buyMachine())
-                    ApiHelper.setMessageOperationSuccessful(session);
+                if(operationMenager.buyMachine())
+                    apiHelper.setMessageOperationSuccessful(session);
                 else
-                    ApiHelper.setMessageOperationUnSuccessful(session);
+                    apiHelper.setMessageOperationUnSuccessful(session);
                 break;
             default:
-                return ApiHelper.getResponseLocation("/robot/" + nick + "/buy/");
+                return apiHelper.getResponseLocation("/robot/" + nick + "/buy/");
         }
-        return ApiHelper.getResponseLocation("/robot/" + nick + "/type/");
+        return apiHelper.getResponseLocation("/robot/" + nick + "/type/");
     }
 }

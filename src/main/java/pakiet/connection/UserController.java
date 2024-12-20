@@ -2,8 +2,7 @@ package pakiet.connection;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.Getter;
-import lombok.Setter;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pakiet.modules.User;
@@ -17,11 +16,20 @@ import pakiet.service.operate.UserMenager;
 public class UserController {
     private boolean isFirstConnection = true;
     private int operationAmount=0;
-
+    @Autowired
+    private UserMenager userMenager;
+    @Autowired
+    private BalanceMenager balanceMenager;
+    @Autowired
+    private ApiHelper apiHelper;
+    @Autowired
+    private StringHelper stringHelper;
+    @Autowired
+    private SellerMenager sellerMenager;
 
     @GetMapping
     public ResponseEntity<Void> getRobotMain(){
-        return ApiHelper.getResponseLocation("/robot/");
+        return apiHelper.getResponseLocation("/robot/");
     }
 
     @GetMapping("/")
@@ -36,14 +44,14 @@ public class UserController {
 
     @GetMapping("/{nick}")
     public ResponseEntity<Void> registerUser(@PathVariable("nick") String nick, HttpSession session) {
-            if(UserMenager.createIfNewUser(nick)){
+            if(userMenager.createIfNewUser(nick)){
                 session.setAttribute("messageInitial", "Zarejestrowano nowego uzytkownika. Witaj "+nick);
             }
             else
                 session.setAttribute("messageInitial", "Witaj spowrotem " + nick + "<br>");
-            UserMenager.setUserEverywhere();
+            userMenager.setUserEverywhere();
             operationAmount=0;
-            return ApiHelper.getResponseLocation("/robot/"+nick+"/type/");
+            return apiHelper.getResponseLocation("/robot/"+nick+"/type/");
     }
 
     @GetMapping("/{nick}/type/")
@@ -57,11 +65,11 @@ public class UserController {
 
         if (sessionMessageInitial!=null) {
             if(sessionMessage!=null)
-                return sessionMessage + "<br>-------------------------------------------------<br>" + sessionMessageInitial + "<br>" +StringHelper.getTypeOperationChoice();
+                return sessionMessage + "<br>-------------------------------------------------<br>" + sessionMessageInitial + "<br>" +stringHelper.getTypeOperationChoice();
             else
-                return sessionMessageInitial + "<br>" + StringHelper.getTypeOperationChoice();
+                return sessionMessageInitial + "<br>" + stringHelper.getTypeOperationChoice();
         }
-        return StringHelper.getTypeOperationChoice();
+        return stringHelper.getTypeOperationChoice();
     }
 
     @GetMapping("/{nick}/type/{choiceType}")
@@ -69,47 +77,46 @@ public class UserController {
         switch (choiceType) {
             case 1:
                 if (ifInvestorOperationPossible(nick))
-                    return ApiHelper.getResponseLocation("/robot/" + nick + "/investor/");
+                    return apiHelper.getResponseLocation("/robot/" + nick + "/investor/");
                 else
-                    return ApiHelper.getResponseLocation("/robot/" + nick + "/type/");
+                    return apiHelper.getResponseLocation("/robot/" + nick + "/type/");
 
             case 2:
                 if (ifSellerOperationPossible(nick))
-                    return ApiHelper.getResponseLocation("/robot/" + nick + "/seller/");
+                    return apiHelper.getResponseLocation("/robot/" + nick + "/seller/");
                 else
-                    return ApiHelper.getResponseLocation("/robot/" + nick + "/type/");
+                    return apiHelper.getResponseLocation("/robot/" + nick + "/type/");
 
             case 3:
-                if (ifBuyOperationPossible(nick))
-                    return ApiHelper.getResponseLocation("/robot/" + nick + "/buy/");
+                if (ifBuyOperationPossible())
+                    return apiHelper.getResponseLocation("/robot/" + nick + "/buy/");
                 else
-                    return ApiHelper.getResponseLocation("/robot/" + nick + "/type/");
+                    return apiHelper.getResponseLocation("/robot/" + nick + "/type/");
 
             case 4:
-                return ApiHelper.getResponseLocation("/robot/" + nick + "/other/");
+                return apiHelper.getResponseLocation("/robot/" + nick + "/other/");
 
             case 5:
                 operationAmount=0;
-                return ApiHelper.getResponseLocation("/robot/");
+                return apiHelper.getResponseLocation("/robot/");
 
             default:
-                return ApiHelper.getResponseLocation("/robot/" + nick + "/type/");
+                return apiHelper.getResponseLocation("/robot/" + nick + "/type/");
         }
     }
 
     public boolean ifInvestorOperationPossible(String nick){
-        User user = UserMenager.findUserByNick(nick);
+        User user = userMenager.findUserByNick(nick);
         return !user.getOwnedInvestors().isEmpty();
     }
 
     public boolean ifSellerOperationPossible(String nick){
-        User user = UserMenager.findUserByNick(nick);
+        User user = userMenager.findUserByNick(nick);
         return !user.getOwnedSellers().isEmpty();
     }
 
-    public boolean ifBuyOperationPossible(String nick){
-        User user = UserMenager.findUserByNick(nick);
-        return BalanceMenager.returnGoldAmount()> SellerMenager.countBuyCost(SellerBooks.class);
+    public boolean ifBuyOperationPossible(){
+        return balanceMenager.returnGoldAmount()> sellerMenager.countBuyCost(SellerBooks.class);
     }
 }
 

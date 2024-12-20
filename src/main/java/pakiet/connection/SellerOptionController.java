@@ -6,9 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pakiet.modules.robot.AbstractSeller;
-import pakiet.modules.robot.SellerHouses;
-import pakiet.service.operate.BalanceMenager;
 import pakiet.service.operate.OperationMenager;
 import pakiet.service.operate.SellerMenager;
 
@@ -16,12 +13,22 @@ import pakiet.service.operate.SellerMenager;
 @RequestMapping("/robot/")
 public class SellerOptionController {
     private int chosedOperation;
-    private int userAmount;
-    private int userId;
+
+    private final OperationMenager operationMenager;
+    private final ApiHelper apiHelper;
+    private final StringHelper stringHelper;
+    private final SellerMenager sellerMenager;
+
+    public SellerOptionController(OperationMenager operationMenager, ApiHelper apiHelper, StringHelper stringHelper, SellerMenager sellerMenager){
+        this.operationMenager = operationMenager;
+        this.apiHelper = apiHelper;
+        this.stringHelper = stringHelper;
+        this.sellerMenager = sellerMenager;
+    }
 
     @GetMapping("{nick}/seller/")
     public String showSellerOperation (@PathVariable String nick){
-        return StringHelper.getSellerOperationChoice();
+        return stringHelper.getSellerOperationChoice();
     }
 
     @GetMapping("{nick}/seller/{choiceOperation}")
@@ -29,47 +36,47 @@ public class SellerOptionController {
         chosedOperation = choiceOperation;
         switch (choiceOperation){
             case 1,3,4:
-                return ApiHelper.getResponseLocation("/robot/" + nick + "/seller/id/");
+                return apiHelper.getResponseLocation("/robot/" + nick + "/seller/id/");
             case 2:
-                OperationMenager.earnGold();
-                ApiHelper.setMessageOperationSuccessful(session);
-                return ApiHelper.getResponseLocation("/robot/" + nick + "/type/");
+                operationMenager.earnGold();
+                apiHelper.setMessageOperationSuccessful(session);
+                return apiHelper.getResponseLocation("/robot/" + nick + "/type/");
             default:
-                return ApiHelper.getResponseLocation("/robot/" + nick + "/seller/");
+                return apiHelper.getResponseLocation("/robot/" + nick + "/seller/");
         }
     }
 
     @GetMapping("{nick}/seller/id/")
     public String showSellerId(){
-        return "Podaj id sellera: " + SellerMenager.returnIdsList();
+        return "Podaj id sellera: " + sellerMenager.returnIdsList();
     }
 
     @GetMapping("{nick}/seller/id/{userId}")
-    public ResponseEntity ChoseSellerIdOperation (@PathVariable String nick, @PathVariable int userId, HttpSession session){
-        if(SellerMenager.findSellerById(userId).isEmpty()){
-            return ApiHelper.getResponseLocation("/robot/" + nick + "/seller/");
+    public ResponseEntity<Void> choseSellerIdOperation (@PathVariable String nick, @PathVariable int userId, HttpSession session){
+        if(sellerMenager.findSellerById(userId).isEmpty()){
+            return apiHelper.getResponseLocation("/robot/" + nick + "/seller/");
         }
         switch (chosedOperation){
             case 1:
-                String message = StringHelper.getShowSeller(userId);
+                String message = stringHelper.getShowSeller(userId);
                 session.setAttribute("message", message);
                 break;
 
             case 3:
-                if(OperationMenager.upgradeSeller(userId))
-                    ApiHelper.setMessageOperationSuccessful(session);
+                if(operationMenager.upgradeSeller(userId))
+                    apiHelper.setMessageOperationSuccessful(session);
                 else
-                    ApiHelper.setMessageOperationUnSuccessful(session);
+                    apiHelper.setMessageOperationUnSuccessful(session);
 
                 break;
 
             case 4:
-                OperationMenager.sellSeller(userId);
-                ApiHelper.setMessageOperationSuccessful(session);
+                operationMenager.sellSeller(userId);
+                apiHelper.setMessageOperationSuccessful(session);
                 break;
+            default:
+                return apiHelper.getResponseLocation("/robot/" + nick + "/seller/");
         }
-        return ApiHelper.getResponseLocation("/robot/" + nick + "/type/");
+        return apiHelper.getResponseLocation("/robot/" + nick + "/type/");
     }
-
-
 }

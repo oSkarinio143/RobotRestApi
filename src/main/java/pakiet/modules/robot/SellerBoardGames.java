@@ -3,23 +3,19 @@ package pakiet.modules.robot;
 import lombok.Getter;
 import lombok.Setter;
 import pakiet.modules.*;
+import pakiet.service.Generator;
+import pakiet.service.operate.InvestorMenager;
 
 import java.io.Serializable;
 import java.util.Map;
 
-public class SellerBoardGames extends SellerGames implements Serializable {
-    private static final long serialVersionUID = 1L;
-    private int sellerBoardGamesId;
-
+public class SellerBoardGames extends SellerGames{
     @Getter
     @Setter
     private static int sellerBoardGamesQuantity = 0;
 
-    @Getter
-    private static final int uniqueId = 1;
-
-    public SellerBoardGames(Map<Integer, Integer> map, Rarity rarity, Level level){
-        super(map, rarity, level);
+    public SellerBoardGames(Map<Integer, Integer> map, Rarity rarity, Level level, Generator generator, InvestorMenager investorMenager){
+        super(map, rarity, level, generator, investorMenager);
     }
 
     @Override

@@ -1,25 +1,15 @@
 package pakiet.modules;
 
-import pakiet.exceptions.IncorrectIdRuntimeException;
 import lombok.Getter;
 
 @Getter
 public enum OperationInvestor {
     DISPLAY(0, 0), CREATE(1, 1000), UPGRADE(2, 5000), SELL(3, -500);
-    int id;
-    int cost;
+    private final int id;
+    private final int cost;
 
     OperationInvestor(int id, int cost) {
         this.id = id;
         this.cost = cost;
-    }
-
-    public static OperationInvestor getById(int id) {
-        for (OperationInvestor value : OperationInvestor.values()) {
-            if (value.id == id) {
-                return value;
-            }
-        }
-        throw new IncorrectIdRuntimeException();
     }
 }
